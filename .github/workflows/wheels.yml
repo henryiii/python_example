@@ -12,7 +12,7 @@ on:
 
 env:
   CIBW_TEST_COMMAND: python {project}/tests/test.py
-  CIBW_BEFORE_BUILD: pip install git+https://github.com/pybind/pybind11.git@master
+  CIBW_BEFORE_BUILD: pip install cmake git+https://github.com/pybind/pybind11.git@master
 
 
 jobs:
@@ -41,6 +41,7 @@ jobs:
     name: Wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
 
