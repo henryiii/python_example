@@ -36,6 +36,10 @@ requirements:
 test:
   imports:
     - python_example
+  source_files:
+    - tests
+  commands:
+    - python tests/test.py
 
 about:
   summary: An example project built with pybind11.

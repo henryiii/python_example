@@ -11,8 +11,7 @@ on:
       - published
 
 env:
-  CIBW_TEST_EXTRAS: test
-  CIBW_TEST_COMMAND: pytest {project}/tests
+  CIBW_TEST_COMMAND: python {project}/tests/test.py
   CIBW_BEFORE_BUILD: pip install git+https://github.com/pybind/pybind11.git@master
 
 
