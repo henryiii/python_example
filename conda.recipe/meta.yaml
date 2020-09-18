@@ -17,7 +17,8 @@ requirements:
   build:
     - python
     - setuptools
-    - pybind11
+      # Disabled for now - pybind11
+      # We are requiring a version newer than the latest release
 
   run:
     - python
