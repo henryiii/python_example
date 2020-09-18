@@ -12,12 +12,16 @@ build:
   script_env:
     - CC
     - CXX
-  script: {{ PYTHON }} -m pip install . -vvv
+  script: |
+    {{ PYTHON }} -m pip install -vvv "git+https://github.com/pybind/pybind11.git@master"
+    {{ PYTHON }} -m pip install . -vvv --no-deps
+    {{ PYTHON }} -m pip uninstall -y pybind11
 
 requirements:
   build:
     - {{ compiler('cxx') }}
     - vs2017_{{ target_platform }}    # [win]
+    - cmake
 
   host:
     - python
@@ -32,12 +36,6 @@ requirements:
 test:
   imports:
     - python_example
-  source_files:
-    - tests
-  requires:
-    - pytest
-  commands:
-    - pytest .
 
 about:
   summary: An example project built with pybind11.
