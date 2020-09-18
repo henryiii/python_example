@@ -12,6 +12,7 @@ on:
 
 env:
   CIBW_TEST_COMMAND: python {project}/tests/test.py
+  # This is a hack that can be removed when we start using wheels for pybind11
   CIBW_BEFORE_BUILD: pip install cmake git+https://github.com/pybind/pybind11.git@master
 
 
@@ -56,7 +57,9 @@ jobs:
     - name: Build wheel
       run: python -m cibuildwheel --output-dir wheelhouse
       env:
-        CIBW_SKIP: cp27-win*
+        # We have to skip Win 3.5 for now, because it doesn't support PEP 518
+        # build from a portable install (can re-add when using wheels for pybind11)
+        CIBW_SKIP: cp27-win* cp35-win*
 
     - name: Show files
       run: ls -lh wheelhouse

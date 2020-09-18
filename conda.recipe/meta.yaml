@@ -13,6 +13,10 @@ build:
     - CC
     - CXX
   script: |
+    # This is a total hack because we are not using conda-forge pybind11. Remove after 2.6.0.
+    # And never do this yourself unless you know what you are doing (it
+    # explicitly is okay with pybind11, but may not be with arbitrary
+    # libraries)
     {{ PYTHON }} -m pip install -vvv "git+https://github.com/pybind/pybind11.git@master"
     {{ PYTHON }} -m pip install . -vvv --no-deps
     {{ PYTHON }} -m pip uninstall -y pybind11
@@ -21,6 +25,7 @@ requirements:
   build:
     - {{ compiler('cxx') }}
     - vs2017_{{ target_platform }}    # [win]
+    # This is a hack because we are not using conda-forge pybind11. Remove after 2.6.0
     - cmake
 
   host:
