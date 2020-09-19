@@ -13,10 +13,10 @@ Installation
 
 **On Windows (Requires Visual Studio 2015)**
 
- - For Python 3.5:
+ - For Python 3.5+:
      - clone this repository
      - `pip install ./python_example`
- - For earlier versions of Python, including Python 2.7:
+ - For Python 2.7:
 
    Pybind11 requires a C++11 compliant compiler (i.e. Visual Studio 2015 on
    Windows). Running a regular `pip install` command will detect the version
@@ -37,7 +37,9 @@ Windows runtime requirements
 ----------------------------
 
 On Windows, the Visual C++ 2015 redistributable packages are a runtime
-requirement for this project. It can be found [here](https://www.microsoft.com/en-us/download/details.aspx?id=48145).
+requirement for this project if you build for Python 2.7 (newer versions of
+Python include this redistributable). It can be found
+[here](https://www.microsoft.com/en-us/download/details.aspx?id=48145).
 
 If you use the Anaconda python distribution, you may require the Visual Studio
 runtime as a platform-dependent runtime requirement for you package:
