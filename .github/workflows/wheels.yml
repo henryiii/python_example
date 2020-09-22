@@ -12,16 +12,42 @@ on:
 
 env:
   CIBW_TEST_COMMAND: python {project}/tests/test.py
-  # This is a hack that can be removed when we start using wheels for pybind11
-  CIBW_BEFORE_BUILD: pip install cmake git+https://github.com/pybind/pybind11.git@master
+  # This allows us to test against current master of pybind11.
+  CIBW_ENVIRONMENT: "PIP_FIND_LINKS=${{ github.workspace }}/dist"
+  PIP_FIND_LINKS: "$GITHUB_WORKSPACE/dist"
 
 
 jobs:
+  build_pybind11:
+    name: Build pybind11 packages from source
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        repository: pybind/pybind11
+
+    - uses: actions/setup-python@v2
+
+    - name: Download requirements
+      run: python -m pip install build
+
+    - name: Build files
+      run: |
+        python -m build
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: pybind11
+        path: dist/*
+
+
   build_sdist:
     name: Build SDist
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+
     - uses: actions/setup-python@v2
 
     - name: Install deps
@@ -41,6 +67,7 @@ jobs:
   build_wheels:
     name: Wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    needs: [build_pybind11]
     strategy:
       fail-fast: false
       matrix:
@@ -51,15 +78,18 @@ jobs:
 
     - uses: actions/setup-python@v2
 
+    - uses: actions/download-artifact@v2
+      with:
+        name: pybind11
+        path: dist
+
     - name: Install cibuildwheel
       run: python -m pip install cibuildwheel==1.6.0
 
     - name: Build wheel
       run: python -m cibuildwheel --output-dir wheelhouse
       env:
-        # We have to skip Win 3.5 for now, because it doesn't support PEP 518
-        # build from a portable install (can re-add when using wheels for pybind11)
-        CIBW_SKIP: cp27-win* cp35-win*
+        CIBW_SKIP: cp27-win*
 
     - name: Show files
       run: ls -lh wheelhouse
@@ -79,13 +109,17 @@ jobs:
   build_win27_wheels:
     name: Py 2.7 wheels on Windows
     runs-on: windows-latest
+    needs: [build_pybind11]
 
     steps:
-    - uses: actions/checkout@v1
-      with:
-        submodules: true
+    - uses: actions/checkout@v2
 
     - uses: actions/setup-python@v2
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: pybind11
+        path: dist
 
     - name: Install cibuildwheel
       run: python -m pip install cibuildwheel==1.6.0
